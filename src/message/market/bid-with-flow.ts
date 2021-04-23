@@ -40,8 +40,4 @@ export class BidWithFlowImpl extends AbstractMessage implements BidWithFlow {
             .then(e => assertNotNegative(e, "amount"))
             .then(e => assertNotEquals(e, "amount", 0))
     }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
-    }
 }

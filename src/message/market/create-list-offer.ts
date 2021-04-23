@@ -31,8 +31,4 @@ export class CreateListOfferImpl extends AbstractMessage implements CreateListOf
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNumeric(e, "price"))
     }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
-    }
 }

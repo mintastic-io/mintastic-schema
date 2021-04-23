@@ -31,8 +31,4 @@ export class RejectBidImpl extends AbstractMessage implements RejectBid {
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNotNegative(e, "bidId"))
     }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
-    }
 }

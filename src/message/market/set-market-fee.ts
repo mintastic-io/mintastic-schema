@@ -27,8 +27,4 @@ export class SetMarketFeeImpl extends AbstractMessage implements SetMarketFee {
             .then(e => assertNumeric(e, "key"))
             .then(e => assertNumeric(e, "value"))
     }
-
-    public toServer(sub: string): Promise<SetMarketFee> {
-        return Promise.resolve(this);
-    }
 }

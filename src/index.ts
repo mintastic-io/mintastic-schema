@@ -2,27 +2,27 @@ export {Message} from "./message/message";
 export {AbstractMessage} from "./message/message";
 
 // cloud messages
-export {SignUrl} from "./message/cloud/sign-url";
+export {SignUrl, SignUrlImpl} from "./message/cloud/sign-url";
 
 // market messages
-export {AbortBid} from "./message/market/abort-bid";
-export {AcceptBid} from "./message/market/accept-bid";
-export {BidWithFiat} from "./message/market/bid-with-fiat";
-export {BidWithFlow} from "./message/market/bid-with-flow";
-export {BuyWithFiat} from "./message/market/buy-with-fiat";
-export {BuyWithFlow} from "./message/market/buy-with-flow";
-export {CreateLazyOffer} from "./message/market/create-lazy-offer";
-export {CreateListOffer} from "./message/market/create-list-offer";
-export {RejectBid} from "./message/market/reject-bid";
-export {SetBlockLimit} from "./message/market/set-block-limit";
-export {SetItemPrice} from "./message/market/set-item-price";
-export {SetMarketFee} from "./message/market/set-market-fee";
+export {AbortBid, AbortBidImpl} from "./message/market/abort-bid";
+export {AcceptBid, AcceptBidImpl} from "./message/market/accept-bid";
+export {BidWithFiat, BidWithFiatImpl} from "./message/market/bid-with-fiat";
+export {BidWithFlow, BidWithFlowImpl} from "./message/market/bid-with-flow";
+export {BuyWithFiat, BuyWithFiatImpl} from "./message/market/buy-with-fiat";
+export {BuyWithFlow, BuyWithFlowImpl} from "./message/market/buy-with-flow";
+export {CreateLazyOffer, CreateLazyOfferImpl} from "./message/market/create-lazy-offer";
+export {CreateListOffer, CreateListOfferImpl} from "./message/market/create-list-offer";
+export {RejectBid, RejectBidImpl} from "./message/market/reject-bid";
+export {SetBlockLimit, SetBlockLimitImpl} from "./message/market/set-block-limit";
+export {SetItemPrice, SetItemPriceImpl} from "./message/market/set-item-price";
+export {SetMarketFee, SetMarketFeeImpl} from "./message/market/set-market-fee";
 
 // nft messages
-export {CreateAsset} from "./message/nft/create-asset";
-export {LockSeries} from "./message/nft/lock-series";
-export {Mint} from "./message/nft/mint";
-export {SetMaxSupply} from "./message/nft/set-max-supply";
+export {CreateAsset, CreateAssetImpl} from "./message/nft/create-asset";
+export {LockSeries, LockSeriesImpl} from "./message/nft/lock-series";
+export {Mint, MintImpl} from "./message/nft/mint";
+export {SetMaxSupply, SetMaxSupplyImpl} from "./message/nft/set-max-supply";
 
 import {SignUrl, SignUrlImpl} from "./message/cloud/sign-url";
 import {AbortBid, AbortBidImpl} from "./message/market/abort-bid";
@@ -42,6 +42,7 @@ import {LockSeries, LockSeriesImpl} from "./message/nft/lock-series";
 import {Mint, MintImpl} from "./message/nft/mint";
 import {SetMaxSupply, SetMaxSupplyImpl} from "./message/nft/set-max-supply";
 import {AbstractMessage, Message} from "./message/message";
+import createHmac from "create-hmac/browser";
 
 export function toImplementation(message: Message): Promise<AbstractMessage> {
     if (AbortBidImpl.isInstance(message))
@@ -79,4 +80,18 @@ export function toImplementation(message: Message): Promise<AbstractMessage> {
     if (SetMaxSupplyImpl.isInstance(message))
         return Promise.resolve(new SetMaxSupplyImpl(message as SetMaxSupply));
     return Promise.reject(`unknown message type ${message}`);
+}
+
+export function getAssetId(creatorId: string, assetName: string): string {
+    const hmac = createHmac('sha256', Buffer.from(creatorId));
+    hmac.update(assetName)
+    const hex = hmac.digest("hex").toString("utf-8");
+
+    // create uuid format asset id
+    const segment1 = hex.substring(0, 8);
+    const segment2 = hex.substring(8, 12);
+    const segment3 = hex.substring(12, 16);
+    const segment4 = hex.substring(16, 20);
+    const segment5 = hex.substring(20, 32);
+    return `${segment1}-${segment2}-${segment3}-${segment4}-${segment5}`
 }

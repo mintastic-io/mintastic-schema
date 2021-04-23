@@ -1,17 +1,23 @@
 import {AbstractMessage, Message} from "../message";
-import {assertNotEmpty} from "../../api/assertions";
+import {assertEquals, assertNotEmpty} from "../../api/assertions";
 
 export interface SignUrl extends Message {
     type: "cloud/sign-url"
+    assetId: string
+    creatorId: string
     fileName: string
 }
 
 export class SignUrlImpl extends AbstractMessage implements SignUrl {
     readonly type = "cloud/sign-url"
+    readonly assetId: string
+    readonly creatorId: string
     readonly fileName: string
 
     constructor(message: SignUrl) {
         super(message);
+        this.assetId = message.assetId
+        this.creatorId = message.creatorId
         this.fileName = message.fileName
     }
 
@@ -19,12 +25,11 @@ export class SignUrlImpl extends AbstractMessage implements SignUrl {
         return object["type"] === "cloud/sign-url";
     }
 
-    public validate(): Promise<SignUrl> {
+    public validate(sub: string): Promise<SignUrl> {
         return Promise.resolve(this as SignUrl)
             .then(e => assertNotEmpty(e, "fileName"))
-    }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
+            .then(e => assertNotEmpty(e, "assetId"))
+            .then(e => assertNotEmpty(e, "creatorId"))
+            .then(e => assertEquals(e, "creatorId", sub))
     }
 }

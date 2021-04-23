@@ -28,8 +28,4 @@ export class SetExchangeRateImpl extends AbstractMessage implements SetExchangeR
             .then(e => assertNotEmpty(e, "currency"))
             .then(e => assertNumeric(e, "exchangeRate"))
     }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
-    }
 }

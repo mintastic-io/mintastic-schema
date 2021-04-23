@@ -28,8 +28,4 @@ export class SetMaxSupplyImpl extends AbstractMessage implements SetMaxSupply {
             .then(e => assertNotNegative(e, "supply"))
             .then(e => assertNotEquals(e, "supply", 0))
     }
-
-    public toServer(sub: string): Promise<SetMaxSupply> {
-        return Promise.resolve(this);
-    }
 }

@@ -9,7 +9,5 @@ export abstract class AbstractMessage implements Message {
         this.dryRun = message.dryRun || false;
     }
 
-    public abstract validate(source: "client" | "server"): Promise<Message>
-
-    public abstract toServer(sub: string): Promise<Message>
+    public abstract validate(sub: string): Promise<Message>
 }

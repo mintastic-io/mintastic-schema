@@ -31,8 +31,4 @@ export class SetItemPriceImpl extends AbstractMessage implements SetItemPrice {
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNumeric(e, "price"))
     }
-
-    public toServer(sub: string): Promise<SetItemPrice> {
-        return Promise.resolve(this);
-    }
 }

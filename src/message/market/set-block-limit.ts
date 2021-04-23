@@ -23,8 +23,4 @@ export class SetBlockLimitImpl extends AbstractMessage implements SetBlockLimit 
         return Promise.resolve(this as SetBlockLimit)
             .then(e => assertNotNegative(e, "blockLimit"))
     }
-
-    public toServer(sub: string): Promise<SetBlockLimit> {
-        return Promise.resolve(this);
-    }
 }

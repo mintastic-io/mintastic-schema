@@ -31,8 +31,4 @@ export class CreateLazyOfferImpl extends AbstractMessage implements CreateLazyOf
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNumeric(e, "price"))
     }
-
-    public toServer(sub: string): Promise<Message> {
-        return Promise.resolve(this);
-    }
 }

@@ -36,6 +36,13 @@ export function assertNotEquals<T extends Message>(message: T, field: string, co
     return Promise.resolve(message);
 }
 
+export function assertEquals<T extends Message>(message: T, field: string, compareWith: any): Promise<T> {
+    const value = getFieldValue(message, field);
+    if (value !== compareWith)
+        return Promise.reject(`${field} must not equal value ${compareWith}`);
+    return Promise.resolve(message);
+}
+
 function getFieldValue(container, field) {
     const segments = field.split(".");
     let value = container;
