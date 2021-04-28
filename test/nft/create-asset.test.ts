@@ -17,6 +17,6 @@ describe("mintastic create-asset schema tests", function () {
             type: 0,
             maxSupply: 10
         }
-        await new CreateAssetValidator().validate(message, creatorId)
+        await new CreateAssetValidator().validate(message, {sub:creatorId})
     });
 })

@@ -9,7 +9,7 @@ describe("lock-series schema tests", function () {
             creatorId: creatorId,
             series: 10,
         }
-        await new LockSeriesValidator().validate(message, creatorId)
+        await new LockSeriesValidator().validate(message, {sub:creatorId})
     });
     test("invalid series", async () => {
         const creatorId = uuid();
@@ -18,6 +18,6 @@ describe("lock-series schema tests", function () {
             creatorId: creatorId,
             series: -1,
         }
-        await expect(new LockSeriesValidator().validate(message, creatorId)).rejects.toBe("series is negative")
+        await expect(new LockSeriesValidator().validate(message, {sub:creatorId})).rejects.toBe("series is negative")
     });
 })
