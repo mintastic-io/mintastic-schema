@@ -1,15 +1,15 @@
-import {SignUrlImpl} from "../../src";
+import {SignUrl, SignUrlValidator} from "../../src";
 import {v4 as uuid} from "uuid"
 
-describe("set-exchange-rate schema tests", function () {
+describe("sign-url schema tests", function () {
     test("valid", async () => {
         const creatorId = uuid();
-        const message = new SignUrlImpl({type: "cloud/sign-url", fileName: "abc", assetId: uuid(), creatorId: creatorId})
-        await message.validate(creatorId);
+        const message: SignUrl = {__type__: "cloud/sign-url", fileName: "abc", assetId: uuid(), creatorId: creatorId};
+        await new SignUrlValidator().validate(message, creatorId);
     });
     test("invalid file name", async () => {
         const creatorId = uuid();
-        const message = new SignUrlImpl({type: "cloud/sign-url", fileName: "", assetId: uuid(), creatorId: creatorId})
-        await expect(message.validate(creatorId)).rejects.toBe("fileName must not be empty")
+        const message: SignUrl = {__type__: "cloud/sign-url", fileName: "", assetId: uuid(), creatorId: creatorId};
+        await expect(new SignUrlValidator().validate(message, creatorId)).rejects.toBe("fileName must not be empty")
     });
 })

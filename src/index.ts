@@ -1,84 +1,91 @@
+import {SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
+import {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
+import {AbortBid, AbortBidValidator} from "./message/market/abort-bid";
+import {AcceptBid, AcceptBidValidator} from "./message/market/accept-bid";
+import {BidWithFiat, BidWithFiatValidator} from "./message/market/bid-with-fiat";
+import {BidWithFlow, BidWithFlowValidator} from "./message/market/bid-with-flow";
+import {BuyWithFiat, BuyWithFiatValidator} from "./message/market/buy-with-fiat";
+import {BuyWithFlow, BuyWithFlowValidator} from "./message/market/buy-with-flow";
+import {CreateLazyOffer, CreateLazyOfferValidator} from "./message/market/create-lazy-offer";
+import {CreateListOffer, CreateListOfferValidator} from "./message/market/create-list-offer";
+import {RejectBid, RejectBidValidator} from "./message/market/reject-bid";
+import {SetBlockLimit, SetBlockLimitValidator} from "./message/market/set-block-limit";
+import {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-price";
+import {SetMarketFee, SetMarketFeeValidator} from "./message/market/set-market-fee";
+import {CreateAsset, CreateAssetValidator} from "./message/nft/create-asset";
+import {LockSeries, LockSeriesValidator} from "./message/nft/lock-series";
+import {Mint, MintValidator} from "./message/nft/mint";
+import {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
+import {Message} from "./message/message";
+import createHmac from "create-hmac/browser";
+import {JwtPayload} from "jwt-decode";
+
 export {Message} from "./message/message";
-export {AbstractMessage} from "./message/message";
 
 // cloud messages
-export {SignUrl, SignUrlImpl} from "./message/cloud/sign-url";
+export {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
 
 // market messages
-export {AbortBid, AbortBidImpl} from "./message/market/abort-bid";
-export {AcceptBid, AcceptBidImpl} from "./message/market/accept-bid";
-export {BidWithFiat, BidWithFiatImpl} from "./message/market/bid-with-fiat";
-export {BidWithFlow, BidWithFlowImpl} from "./message/market/bid-with-flow";
-export {BuyWithFiat, BuyWithFiatImpl} from "./message/market/buy-with-fiat";
-export {BuyWithFlow, BuyWithFlowImpl} from "./message/market/buy-with-flow";
-export {CreateLazyOffer, CreateLazyOfferImpl} from "./message/market/create-lazy-offer";
-export {CreateListOffer, CreateListOfferImpl} from "./message/market/create-list-offer";
-export {RejectBid, RejectBidImpl} from "./message/market/reject-bid";
-export {SetBlockLimit, SetBlockLimitImpl} from "./message/market/set-block-limit";
-export {SetItemPrice, SetItemPriceImpl} from "./message/market/set-item-price";
-export {SetMarketFee, SetMarketFeeImpl} from "./message/market/set-market-fee";
+export {AbortBid, AbortBidValidator} from "./message/market/abort-bid";
+export {AcceptBid, AcceptBidValidator} from "./message/market/accept-bid";
+export {BidWithFiat, BidWithFiatValidator} from "./message/market/bid-with-fiat";
+export {BidWithFlow, BidWithFlowValidator} from "./message/market/bid-with-flow";
+export {BuyWithFiat, BuyWithFiatValidator} from "./message/market/buy-with-fiat";
+export {BuyWithFlow, BuyWithFlowValidator} from "./message/market/buy-with-flow";
+export {CreateLazyOffer, CreateLazyOfferValidator} from "./message/market/create-lazy-offer";
+export {CreateListOffer, CreateListOfferValidator} from "./message/market/create-list-offer";
+export {RejectBid, RejectBidValidator} from "./message/market/reject-bid";
+export {SetBlockLimit, SetBlockLimitValidator} from "./message/market/set-block-limit";
+export {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-price";
+export {SetMarketFee, SetMarketFeeValidator} from "./message/market/set-market-fee";
 
 // nft messages
-export {CreateAsset, CreateAssetImpl} from "./message/nft/create-asset";
-export {LockSeries, LockSeriesImpl} from "./message/nft/lock-series";
-export {Mint, MintImpl} from "./message/nft/mint";
-export {SetMaxSupply, SetMaxSupplyImpl} from "./message/nft/set-max-supply";
+export {CreateAsset, CreateAssetValidator} from "./message/nft/create-asset";
+export {LockSeries, LockSeriesValidator} from "./message/nft/lock-series";
+export {Mint, MintValidator} from "./message/nft/mint";
+export {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
 
-import {SignUrl, SignUrlImpl} from "./message/cloud/sign-url";
-import {AbortBid, AbortBidImpl} from "./message/market/abort-bid";
-import {AcceptBid, AcceptBidImpl} from "./message/market/accept-bid";
-import {BidWithFiat, BidWithFiatImpl} from "./message/market/bid-with-fiat";
-import {BidWithFlow, BidWithFlowImpl} from "./message/market/bid-with-flow";
-import {BuyWithFiat, BuyWithFiatImpl} from "./message/market/buy-with-fiat";
-import {BuyWithFlow, BuyWithFlowImpl} from "./message/market/buy-with-flow";
-import {CreateLazyOffer, CreateLazyOfferImpl} from "./message/market/create-lazy-offer";
-import {CreateListOffer, CreateListOfferImpl} from "./message/market/create-list-offer";
-import {RejectBid, RejectBidImpl} from "./message/market/reject-bid";
-import {SetBlockLimit, SetBlockLimitImpl} from "./message/market/set-block-limit";
-import {SetItemPrice, SetItemPriceImpl} from "./message/market/set-item-price";
-import {SetMarketFee, SetMarketFeeImpl} from "./message/market/set-market-fee";
-import {CreateAsset, CreateAssetImpl} from "./message/nft/create-asset";
-import {LockSeries, LockSeriesImpl} from "./message/nft/lock-series";
-import {Mint, MintImpl} from "./message/nft/mint";
-import {SetMaxSupply, SetMaxSupplyImpl} from "./message/nft/set-max-supply";
-import {AbstractMessage, Message} from "./message/message";
-import createHmac from "create-hmac/browser";
+// credit messages
+export {SetExchangeRate, SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
 
-export function toImplementation(message: Message): Promise<AbstractMessage> {
-    if (AbortBidImpl.isInstance(message))
-        return Promise.resolve(new AbortBidImpl(message));
-    if (SignUrlImpl.isInstance(message))
-        return Promise.resolve(new SignUrlImpl(message as SignUrl));
-    if (AcceptBidImpl.isInstance(message))
-        return Promise.resolve(new AcceptBidImpl(message as AcceptBid));
-    if (BidWithFiatImpl.isInstance(message))
-        return Promise.resolve(new BidWithFiatImpl(message as BidWithFiat));
-    if (BidWithFlowImpl.isInstance(message))
-        return Promise.resolve(new BidWithFlowImpl(message as BidWithFlow));
-    if (BuyWithFiatImpl.isInstance(message))
-        return Promise.resolve(new BuyWithFiatImpl(message as BuyWithFiat));
-    if (BuyWithFlowImpl.isInstance(message))
-        return Promise.resolve(new BuyWithFlowImpl(message as BuyWithFlow));
-    if (CreateLazyOfferImpl.isInstance(message))
-        return Promise.resolve(new CreateLazyOfferImpl(message as CreateLazyOffer));
-    if (CreateListOfferImpl.isInstance(message))
-        return Promise.resolve(new CreateListOfferImpl(message as CreateListOffer));
-    if (RejectBidImpl.isInstance(message))
-        return Promise.resolve(new RejectBidImpl(message as RejectBid));
-    if (SetBlockLimitImpl.isInstance(message))
-        return Promise.resolve(new SetBlockLimitImpl(message as SetBlockLimit));
-    if (SetItemPriceImpl.isInstance(message))
-        return Promise.resolve(new SetItemPriceImpl(message as SetItemPrice));
-    if (SetMarketFeeImpl.isInstance(message))
-        return Promise.resolve(new SetMarketFeeImpl(message as SetMarketFee));
-    if (CreateAssetImpl.isInstance(message))
-        return Promise.resolve(new CreateAssetImpl(message as CreateAsset));
-    if (LockSeriesImpl.isInstance(message))
-        return Promise.resolve(new LockSeriesImpl(message as LockSeries));
-    if (MintImpl.isInstance(message))
-        return Promise.resolve(new MintImpl(message as Mint));
-    if (SetMaxSupplyImpl.isInstance(message))
-        return Promise.resolve(new SetMaxSupplyImpl(message as SetMaxSupply));
+export function validate(message: Message, jwt: JwtPayload): Promise<Message> {
+    if (AbortBidValidator.isInstance(message))
+        return Promise.resolve(new AbortBidValidator().validate(message));
+    if (SignUrlValidator.isInstance(message))
+        return Promise.resolve(new SignUrlValidator().validate(message, jwt));
+    if (AcceptBidValidator.isInstance(message))
+        return Promise.resolve(new AcceptBidValidator().validate(message));
+    if (BidWithFiatValidator.isInstance(message))
+        return Promise.resolve(new BidWithFiatValidator().validate(message));
+    if (BidWithFlowValidator.isInstance(message))
+        return Promise.resolve(new BidWithFlowValidator().validate(message));
+    if (BuyWithFiatValidator.isInstance(message))
+        return Promise.resolve(new BuyWithFiatValidator().validate(message));
+    if (BuyWithFlowValidator.isInstance(message))
+        return Promise.resolve(new BuyWithFlowValidator().validate(message));
+    if (CreateLazyOfferValidator.isInstance(message))
+        return Promise.resolve(new CreateLazyOfferValidator().validate(message));
+    if (CreateListOfferValidator.isInstance(message))
+        return Promise.resolve(new CreateListOfferValidator().validate(message));
+    if (RejectBidValidator.isInstance(message))
+        return Promise.resolve(new RejectBidValidator().validate(message));
+    if (SetBlockLimitValidator.isInstance(message))
+        return Promise.resolve(new SetBlockLimitValidator().validate(message));
+    if (SetItemPriceValidator.isInstance(message))
+        return Promise.resolve(new SetItemPriceValidator().validate(message));
+    if (SetMarketFeeValidator.isInstance(message))
+        return Promise.resolve(new SetMarketFeeValidator().validate(message));
+    if (CreateAssetValidator.isInstance(message))
+        return Promise.resolve(new CreateAssetValidator().validate(message, jwt));
+    if (LockSeriesValidator.isInstance(message))
+        return Promise.resolve(new LockSeriesValidator().validate(message, jwt));
+    if (MintValidator.isInstance(message))
+        return Promise.resolve(new MintValidator().validate(message));
+    if (SetMaxSupplyValidator.isInstance(message))
+        return Promise.resolve(new SetMaxSupplyValidator().validate(message));
+    if (SetExchangeRateValidator.isInstance(message))
+        return Promise.resolve(new SetExchangeRateValidator().validate(message));
+
     return Promise.reject(`unknown message type ${message}`);
 }
 
@@ -93,5 +100,6 @@ export function getAssetId(creatorId: string, assetName: string): string {
     const segment3 = hex.substring(12, 16);
     const segment4 = hex.substring(16, 20);
     const segment5 = hex.substring(20, 32);
+
     return `${segment1}-${segment2}-${segment3}-${segment4}-${segment5}`
 }

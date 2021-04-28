@@ -1,8 +1,8 @@
-import {AbstractMessage, Message} from "../message";
+import {Message} from "../message";
 import {assertNotEmpty, assertNotEquals, assertNotNegative, assertNumeric} from "../../api/assertions";
 
 export interface BuyWithFlow extends Message {
-    type: "market/buy-with-flow"
+    __type__: "market/buy-with-flow"
     owner: string
     buyer: string
     assetId: string
@@ -10,29 +10,13 @@ export interface BuyWithFlow extends Message {
     amount: number
 }
 
-export class BuyWithFlowImpl extends AbstractMessage implements BuyWithFlow {
-    readonly type = "market/buy-with-flow"
-    readonly owner: string
-    readonly buyer: string
-    readonly assetId: string
-    readonly price: string
-    readonly amount: number
-
-    constructor(message: BuyWithFlow) {
-        super(message);
-        this.owner = message.owner
-        this.buyer = message.buyer
-        this.assetId = message.assetId
-        this.price = message.price
-        this.amount = message.amount
-    }
-
+export class BuyWithFlowValidator {
     public static isInstance(object: any): object is BuyWithFlow {
-        return object["type"] === "market/buy-with-flow";
+        return object["__type__"] === "market/buy-with-flow";
     }
 
-    public validate(): Promise<BuyWithFlow> {
-        return Promise.resolve(this as BuyWithFlow)
+    public validate(message: BuyWithFlow): Promise<BuyWithFlow> {
+        return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "owner"))
             .then(e => assertNotEmpty(e, "buyer"))
             .then(e => assertNotEmpty(e, "assetId"))

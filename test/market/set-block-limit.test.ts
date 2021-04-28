@@ -1,12 +1,12 @@
-import {SetBlockLimitImpl} from "../../src/message/market/set-block-limit";
+import {SetBlockLimit, SetBlockLimitValidator} from "../../src";
 
 describe("set-block-limit schema tests", function () {
     test("valid", async () => {
-        const message = new SetBlockLimitImpl({type: "market/set-block-limit", blockLimit: 10})
-        await message.validate()
+        const message: SetBlockLimit = {__type__: "market/set-block-limit", blockLimit: 10}
+        await new SetBlockLimitValidator().validate(message)
     });
     test("invalid owner", async () => {
-        const message = new SetBlockLimitImpl({type: "market/set-block-limit", blockLimit: -1})
-        await expect(message.validate()).rejects.toBe("blockLimit is negative")
+        const message: SetBlockLimit = {__type__: "market/set-block-limit", blockLimit: -1}
+        await expect(new SetBlockLimitValidator().validate(message)).rejects.toBe("blockLimit is negative")
     });
 })

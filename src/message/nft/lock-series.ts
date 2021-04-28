@@ -1,31 +1,22 @@
-import {AbstractMessage, Message} from "../message";
+import {Message} from "../message";
 import {assertEquals, assertNotEmpty, assertNotNegative} from "../../api/assertions";
+import {JwtPayload} from "jwt-decode";
 
 export interface LockSeries extends Message {
-    type: "nft/lock-series"
+    __type__: "nft/lock-series"
     creatorId: string
     series: number
 }
 
-export class LockSeriesImpl extends AbstractMessage implements LockSeries {
-    readonly type = "nft/lock-series"
-    readonly creatorId: string
-    readonly series: number
-
-    constructor(message: LockSeries) {
-        super(message);
-        this.creatorId = message.creatorId
-        this.series = message.series
-    }
-
+export class LockSeriesValidator {
     public static isInstance(object: any): object is LockSeries {
-        return object["type"] === "nft/lock-series";
+        return object["__type__"] === "nft/lock-series";
     }
 
-    public validate(sub): Promise<LockSeries> {
-        return Promise.resolve(this as LockSeries)
+    public validate(message: LockSeries, jwt: JwtPayload): Promise<LockSeries> {
+        return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "creatorId"))
-            .then(e => assertEquals(e, "creatorId", sub))
+            .then(e => assertEquals(e, "creatorId", jwt))
             .then(e => assertNotNegative(e, "series"))
     }
 }

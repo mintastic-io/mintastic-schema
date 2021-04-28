@@ -1,32 +1,20 @@
-import {AbstractMessage, Message} from "../message";
+import {Message} from "../message";
 import {assertNotEmpty, assertNumeric} from "../../api/assertions";
 
 export interface SetItemPrice extends Message {
-    type: "market/set-item-price"
+    __type__: "market/set-item-price"
     owner: string
     assetId: string
     price: string
 }
 
-export class SetItemPriceImpl extends AbstractMessage implements SetItemPrice {
-    readonly type = "market/set-item-price"
-    readonly owner: string
-    readonly assetId: string
-    readonly price: string
-
-    constructor(message: SetItemPrice) {
-        super(message);
-        this.owner = message.owner
-        this.assetId = message.assetId
-        this.price = message.price
-    }
-
+export class SetItemPriceValidator {
     public static isInstance(object: any): object is SetItemPrice {
-        return object["type"] === "market/set-item-price";
+        return object["__type__"] === "market/set-item-price";
     }
 
-    public validate(): Promise<SetItemPrice> {
-        return Promise.resolve(this as SetItemPrice)
+    public validate(message: SetItemPrice): Promise<SetItemPrice> {
+        return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "owner"))
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNumeric(e, "price"))

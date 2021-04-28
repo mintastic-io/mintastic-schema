@@ -1,23 +1,23 @@
 import {v4 as uuid} from "uuid"
-import {LockSeriesImpl} from "../../src/message/nft/lock-series";
+import {LockSeries, LockSeriesValidator} from "../../src";
 
 describe("lock-series schema tests", function () {
     test("valid server", async () => {
         const creatorId = uuid();
-        const message = new LockSeriesImpl({
-            type: "nft/lock-series",
+        const message: LockSeries = {
+            __type__: "nft/lock-series",
             creatorId: creatorId,
             series: 10,
-        })
-        await message.validate(creatorId)
+        }
+        await new LockSeriesValidator().validate(message, creatorId)
     });
     test("invalid series", async () => {
         const creatorId = uuid();
-        const message = new LockSeriesImpl({
-            type: "nft/lock-series",
+        const message:LockSeries = {
+            __type__: "nft/lock-series",
             creatorId: creatorId,
             series: -1,
-        })
-        await expect(message.validate(creatorId)).rejects.toBe("series is negative")
+        }
+        await expect(new LockSeriesValidator().validate(message, creatorId)).rejects.toBe("series is negative")
     });
 })

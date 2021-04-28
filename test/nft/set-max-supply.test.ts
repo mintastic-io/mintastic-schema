@@ -1,29 +1,29 @@
 import {v4 as uuid} from "uuid"
-import {SetMaxSupplyImpl} from "../../src/message/nft/set-max-supply";
+import {SetMaxSupply, SetMaxSupplyValidator} from "../../src";
 
 describe("set-max-supply schema tests", function () {
     test("valid", async () => {
-        const message = new SetMaxSupplyImpl({
-            type: "nft/set-max-supply",
+        const message: SetMaxSupply = {
+            __type__: "nft/set-max-supply",
             assetId: uuid(),
             supply: 10
-        })
-        await message.validate()
+        }
+        await new SetMaxSupplyValidator().validate(message)
     });
     test("invalid asset id", async () => {
-        const message = new SetMaxSupplyImpl({
-            type: "nft/set-max-supply",
+        const message: SetMaxSupply = {
+            __type__: "nft/set-max-supply",
             assetId: "",
             supply: 10
-        })
-        await expect(message.validate()).rejects.toBe("assetId must not be empty")
+        }
+        await expect(new SetMaxSupplyValidator().validate(message)).rejects.toBe("assetId must not be empty")
     });
     test("invalid supply", async () => {
-        const message = new SetMaxSupplyImpl({
-            type: "nft/set-max-supply",
+        const message: SetMaxSupply = {
+            __type__: "nft/set-max-supply",
             assetId: uuid(),
             supply: 0
-        })
-        await expect(message.validate()).rejects.toBe("supply must not equal value 0")
+        }
+        await expect(new SetMaxSupplyValidator().validate(message)).rejects.toBe("supply must not equal value 0")
     });
 })

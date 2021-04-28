@@ -1,39 +1,34 @@
-import {AbstractMessage, Message} from "../message";
-import {Asset} from "../../api/types";
+import {Message} from "../message";
 import {assertEquals, assertNotEmpty, assertNotNegative, assertNotNull, assertNumeric} from "../../api/assertions";
+import {JwtPayload} from "jwt-decode";
 
 export interface CreateAsset extends Message {
-    type: "nft/create-asset"
-    asset: Asset
+    __type__: "nft/create-asset"
+    assetId: string
+    creatorId: string
+    content: string
+    address: string
+    royalty: string
+    series: number
+    type: number
     maxSupply: number
 }
 
-export class CreateAssetImpl extends AbstractMessage implements CreateAsset {
-    readonly type = "nft/create-asset"
-    readonly asset: Asset
-    readonly maxSupply: number
-
-    constructor(message: CreateAsset) {
-        super(message);
-        this.asset = message.asset
-        this.maxSupply = message.maxSupply
-    }
-
+export class CreateAssetValidator {
     public static isInstance(object: any): object is CreateAsset {
-        return object["type"] === "nft/create-asset";
+        return object["__type__"] === "nft/create-asset";
     }
 
-    public validate(sub): Promise<CreateAsset> {
-        return Promise.resolve(this as CreateAsset)
-            .then(e => assertNotNull(e, "asset"))
-            .then(e => assertNotEmpty(e, "asset.assetId"))
-            .then(e => assertNotEmpty(e, "asset.creatorId"))
-            .then(e => assertEquals(e, "asset.creatorId", sub))
-            .then(e => assertNotNull(e, "asset.content"))
-            .then(e => assertNotEmpty(e, "asset.address"))
-            .then(e => assertNumeric(e, "asset.royalty"))
-            .then(e => assertNotNegative(e, "asset.series"))
-            .then(e => assertNotNegative(e, "asset.type"))
+    public validate(message: CreateAsset, jwt: JwtPayload): Promise<CreateAsset> {
+        return Promise.resolve(message)
+            .then(e => assertNotEmpty(e, "assetId"))
+            .then(e => assertNotEmpty(e, "creatorId"))
+            .then(e => assertEquals(e, "creatorId", jwt))
+            .then(e => assertNotNull(e, "content"))
+            .then(e => assertNotEmpty(e, "address"))
+            .then(e => assertNumeric(e, "royalty"))
+            .then(e => assertNotNegative(e, "series"))
+            .then(e => assertNotNegative(e, "type"))
             .then(e => assertNotNegative(e, "maxSupply"))
     }
 }

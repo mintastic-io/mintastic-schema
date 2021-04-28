@@ -1,32 +1,20 @@
 import {assertNotEmpty, assertNotNegative} from "../../api/assertions";
-import {AbstractMessage, Message} from "../message";
+import {Message} from "../message";
 
 export interface AcceptBid extends Message {
-    type: "market/accept-bid"
+    __type__: "market/accept-bid"
     owner: string
     assetId: string
     bidId: number
 }
 
-export class AcceptBidImpl extends AbstractMessage implements AcceptBid {
-    readonly type = "market/accept-bid"
-    readonly owner: string
-    readonly assetId: string
-    readonly bidId: number
-
-    constructor(message: AcceptBid) {
-        super(message);
-        this.owner = message.owner
-        this.assetId = message.assetId
-        this.bidId = message.bidId
-    }
-
+export class AcceptBidValidator {
     public static isInstance(object: any): object is AcceptBid {
-        return object["type"] === "market/accept-bid";
+        return object["__type__"] === "market/accept-bid";
     }
 
-    public validate(): Promise<AcceptBid> {
-        return Promise.resolve(this as AcceptBid)
+    public validate(message: AcceptBid): Promise<AcceptBid> {
+        return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "owner"))
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNotNegative(e, "bidId"))
