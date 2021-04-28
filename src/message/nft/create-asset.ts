@@ -23,7 +23,7 @@ export class CreateAssetValidator {
         return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNotEmpty(e, "creatorId"))
-            .then(e => assertEquals(e, "creatorId", jwt))
+            .then(e => assertEquals(e, "creatorId", jwt.sub))
             .then(e => assertNotNull(e, "content"))
             .then(e => assertNotEmpty(e, "address"))
             .then(e => assertNumeric(e, "royalty"))

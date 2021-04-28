@@ -16,7 +16,7 @@ export class LockSeriesValidator {
     public validate(message: LockSeries, jwt: JwtPayload): Promise<LockSeries> {
         return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "creatorId"))
-            .then(e => assertEquals(e, "creatorId", jwt))
+            .then(e => assertEquals(e, "creatorId", jwt.sub))
             .then(e => assertNotNegative(e, "series"))
     }
 }
