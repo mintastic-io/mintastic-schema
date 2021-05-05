@@ -6,8 +6,8 @@ export interface CreateAsset extends Message {
     __type__: "nft/create-asset"
     assetId: string
     creatorId: string
+    addresses: [{ address: string, share: number }]
     content: string
-    address: string
     royalty: string
     series: number
     type: number
@@ -25,7 +25,7 @@ export class CreateAssetValidator {
             .then(e => assertNotEmpty(e, "creatorId"))
             .then(e => assertEquals(e, "creatorId", jwt.sub))
             .then(e => assertNotNull(e, "content"))
-            .then(e => assertNotEmpty(e, "address"))
+            .then(e => assertNotEmpty(e, "addresses"))
             .then(e => assertNumeric(e, "royalty"))
             .then(e => assertNotNegative(e, "series"))
             .then(e => assertNotNegative(e, "type"))

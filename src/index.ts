@@ -19,6 +19,7 @@ import {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply"
 import {Message} from "./message/message";
 import createHmac from "create-hmac/browser";
 import {JwtPayload} from "jwt-decode";
+import {AssetExistsValidator} from "./message/cloud/asset-exists";
 
 export {Message} from "./message/message";
 
@@ -85,6 +86,8 @@ export function validate(message: Message, jwt: JwtPayload): Promise<Message> {
         return Promise.resolve(new SetMaxSupplyValidator().validate(message));
     if (SetExchangeRateValidator.isInstance(message))
         return Promise.resolve(new SetExchangeRateValidator().validate(message));
+    if (AssetExistsValidator.isInstance(message))
+        return Promise.resolve(new AssetExistsValidator().validate(message));
 
     return Promise.reject(`unknown message type ${message}`);
 }
