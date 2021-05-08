@@ -6,7 +6,7 @@ export interface CreateAsset extends Message {
     __type__: "nft/create-asset"
     assetId: string
     creatorId: string
-    addresses: [{ address: string, share: number }]
+    addresses: { address: string, share: string }[]
     content: string
     royalty: string
     series: number

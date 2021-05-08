@@ -11,7 +11,7 @@ describe("mintastic create-asset schema tests", function () {
             assetId: assetId,
             creatorId: creatorId,
             royalty: "0.1",
-            addresses: [{address: `0x${uuid()}`, share: 1.0}],
+            addresses: [{address: `0x${uuid()}`, share: "1.0"}],
             content: "{a:0}",
             series: 0,
             type: 0,
