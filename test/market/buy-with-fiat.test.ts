@@ -9,7 +9,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: uuid(),
             assetId: uuid(),
             price: "10.0",
-            amount: 10
+            amount: 10,
+            unlock: false
         }
         await new BuyWithFiatValidator().validate(message)
     });
@@ -20,7 +21,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: uuid(),
             assetId: uuid(),
             price: "10.0",
-            amount: 10
+            amount: 10,
+            unlock: false
         }
         await expect(new BuyWithFiatValidator().validate(message)).rejects.toBe("owner must not be empty")
     });
@@ -31,7 +33,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: "",
             assetId: uuid(),
             price: "10.0",
-            amount: 10
+            amount: 10,
+            unlock: false
         }
         await expect(new BuyWithFiatValidator().validate(message)).rejects.toBe("buyer must not be empty")
     });
@@ -42,7 +45,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: uuid(),
             assetId: "",
             price: "10.0",
-            amount: 10
+            amount: 10,
+            unlock: false
         }
         await expect(new BuyWithFiatValidator().validate(message)).rejects.toBe("assetId must not be empty")
     });
@@ -53,7 +57,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: uuid(),
             assetId: uuid(),
             price: "test",
-            amount: 10
+            amount: 10,
+            unlock: false
         }
         await expect(new BuyWithFiatValidator().validate(message)).rejects.toBe("price is not numeric")
     });
@@ -64,7 +69,8 @@ describe("buy-with-fiat schema tests", function () {
             buyer: uuid(),
             assetId: uuid(),
             price: "10.0",
-            amount: 0
+            amount: 0,
+            unlock: false
         }
         await expect(new BuyWithFiatValidator().validate(message)).rejects.toBe("amount must not equal value 0")
     });

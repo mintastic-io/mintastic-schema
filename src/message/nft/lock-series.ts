@@ -1,6 +1,6 @@
 import {Message} from "../message";
 import {assertEquals, assertNotEmpty, assertNotNegative} from "../../api/assertions";
-import {JwtPayload} from "jwt-decode";
+import {Token} from "../../api/types";
 
 export interface LockSeries extends Message {
     __type__: "nft/lock-series"
@@ -13,10 +13,10 @@ export class LockSeriesValidator {
         return object["__type__"] === "nft/lock-series";
     }
 
-    public validate(message: LockSeries, jwt: JwtPayload): Promise<LockSeries> {
+    public validate(message: LockSeries, token: Token): Promise<LockSeries> {
         return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "creatorId"))
-            .then(e => assertEquals(e, "creatorId", jwt.sub))
+            .then(e => assertEquals(e, "creatorId", token.getCreatorId()))
             .then(e => assertNotNegative(e, "series"))
     }
 }

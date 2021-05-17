@@ -8,8 +8,19 @@ export function assertNull<T extends Message>(message: T, field: string): Promis
     return !getFieldValue(message, field) ? Promise.resolve(message) : Promise.reject(`${field} must be null`);
 }
 
+export function assertMaxLength<T extends Message>(message: T, field: string, length: number): Promise<T> {
+    const value = getFieldValue(message, field);
+    if (value.length <= length)
+        return Promise.resolve(message);
+    return Promise.reject(`${field} is too long (max ${length})`);
+}
+
 export function assertNotEmpty<T extends Message>(message: T, field: string): Promise<T> {
     const value = getFieldValue(message, field);
+    if (typeof value === "object" && Object.keys(value).length > 0)
+        return Promise.resolve(message);
+    if (typeof value === "number" && value >= 0)
+        return Promise.resolve(message);
     if (!value || !value.length || value.length === 0)
         return Promise.reject(`${field} must not be empty`);
     return Promise.resolve(message);

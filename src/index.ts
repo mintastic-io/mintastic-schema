@@ -18,10 +18,19 @@ import {Mint, MintValidator} from "./message/nft/mint";
 import {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
 import {Message} from "./message/message";
 import createHmac from "create-hmac/browser";
-import {JwtPayload} from "jwt-decode";
 import {AssetExistsValidator} from "./message/cloud/asset-exists";
+import {FiatPaymentValidator} from "./message/credit/fiat-payment";
+import {LockOfferingValidator} from "./message/market/lock-offering";
+import {UnlockOfferingValidator} from "./message/market/unlock-offering";
+import {FiatBidPaymentValidator} from "./message/credit/fiat-bid-payment";
+import {TransferValidator} from "./message/nft/transfer";
+import {CreatePaymentAccountValidator} from "./message/credit/create-payment-account";
+import {LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
+import {ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
+import {Token} from "./api/types";
 
 export {Message} from "./message/message";
+export {Token, IdToken, TokenPayload} from "./api/types";
 
 // cloud messages
 export {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
@@ -39,21 +48,29 @@ export {RejectBid, RejectBidValidator} from "./message/market/reject-bid";
 export {SetBlockLimit, SetBlockLimitValidator} from "./message/market/set-block-limit";
 export {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-price";
 export {SetMarketFee, SetMarketFeeValidator} from "./message/market/set-market-fee";
+export {LockOffering, LockOfferingValidator} from "./message/market/lock-offering";
+export {UnlockOffering, UnlockOfferingValidator} from "./message/market/unlock-offering";
 
 // nft messages
 export {CreateAsset, CreateAssetValidator} from "./message/nft/create-asset";
 export {LockSeries, LockSeriesValidator} from "./message/nft/lock-series";
 export {Mint, MintValidator} from "./message/nft/mint";
 export {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
+export {Transfer, TransferValidator} from "./message/nft/transfer";
 
 // credit messages
 export {SetExchangeRate, SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
+export {FiatPayment, FiatPaymentValidator} from "./message/credit/fiat-payment";
+export {FiatBidPayment, FiatBidPaymentValidator} from "./message/credit/fiat-bid-payment";
+export {CreatePaymentAccount, CreatePaymentAccountValidator} from "./message/credit/create-payment-account";
+export {LinkPaymentAccount, LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
+export {ReadPaymentAccount, ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 
-export function validate(message: Message, jwt: JwtPayload): Promise<Message> {
+export function validate(message: Message, token: Token): Promise<Message> {
     if (AbortBidValidator.isInstance(message))
         return Promise.resolve(new AbortBidValidator().validate(message));
     if (SignUrlValidator.isInstance(message))
-        return Promise.resolve(new SignUrlValidator().validate(message, jwt));
+        return Promise.resolve(new SignUrlValidator().validate(message, token));
     if (AcceptBidValidator.isInstance(message))
         return Promise.resolve(new AcceptBidValidator().validate(message));
     if (BidWithFiatValidator.isInstance(message))
@@ -77,9 +94,9 @@ export function validate(message: Message, jwt: JwtPayload): Promise<Message> {
     if (SetMarketFeeValidator.isInstance(message))
         return Promise.resolve(new SetMarketFeeValidator().validate(message));
     if (CreateAssetValidator.isInstance(message))
-        return Promise.resolve(new CreateAssetValidator().validate(message, jwt));
+        return Promise.resolve(new CreateAssetValidator().validate(message, token));
     if (LockSeriesValidator.isInstance(message))
-        return Promise.resolve(new LockSeriesValidator().validate(message, jwt));
+        return Promise.resolve(new LockSeriesValidator().validate(message, token));
     if (MintValidator.isInstance(message))
         return Promise.resolve(new MintValidator().validate(message));
     if (SetMaxSupplyValidator.isInstance(message))
@@ -88,6 +105,22 @@ export function validate(message: Message, jwt: JwtPayload): Promise<Message> {
         return Promise.resolve(new SetExchangeRateValidator().validate(message));
     if (AssetExistsValidator.isInstance(message))
         return Promise.resolve(new AssetExistsValidator().validate(message));
+    if (FiatPaymentValidator.isInstance(message))
+        return Promise.resolve(new FiatPaymentValidator().validate(message));
+    if (FiatBidPaymentValidator.isInstance(message))
+        return Promise.resolve(new FiatBidPaymentValidator().validate(message));
+    if (LockOfferingValidator.isInstance(message))
+        return Promise.resolve(new LockOfferingValidator().validate(message));
+    if (UnlockOfferingValidator.isInstance(message))
+        return Promise.resolve(new UnlockOfferingValidator().validate(message));
+    if (TransferValidator.isInstance(message))
+        return Promise.resolve(new TransferValidator().validate(message));
+    if (CreatePaymentAccountValidator.isInstance(message))
+        return Promise.resolve(new CreatePaymentAccountValidator().validate(message));
+    if (LinkPaymentAccountValidator.isInstance(message))
+        return Promise.resolve(new LinkPaymentAccountValidator().validate(message));
+    if (ReadPaymentAccountValidator.isInstance(message))
+        return Promise.resolve(new ReadPaymentAccountValidator().validate(message));
 
     return Promise.reject(`unknown message type ${message}`);
 }

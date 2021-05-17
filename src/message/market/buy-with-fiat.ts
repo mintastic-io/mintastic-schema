@@ -8,6 +8,7 @@ export interface BuyWithFiat extends Message {
     assetId: string
     price: string
     amount: number
+    unlock: boolean
 }
 
 export class BuyWithFiatValidator {

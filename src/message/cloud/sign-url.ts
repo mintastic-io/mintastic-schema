@@ -1,6 +1,6 @@
 import {Message} from "../message";
 import {assertEquals, assertNotEmpty} from "../../api/assertions";
-import {JwtPayload} from "jwt-decode";
+import {Token} from "../../api/types";
 
 export interface SignUrl extends Message {
     __type__: "cloud/sign-url"
@@ -14,11 +14,11 @@ export class SignUrlValidator {
         return object["__type__"] === "cloud/sign-url";
     }
 
-    public validate(message: SignUrl, jwt: JwtPayload): Promise<SignUrl> {
+    public validate(message: SignUrl, token: Token): Promise<SignUrl> {
         return Promise.resolve(message)
             .then(e => assertNotEmpty(e, "fileName"))
             .then(e => assertNotEmpty(e, "assetId"))
             .then(e => assertNotEmpty(e, "creatorId"))
-            .then(e => assertEquals(e, "creatorId", jwt.sub))
+            .then(e => assertEquals(e, "creatorId", token.getCreatorId()))
     }
 }
