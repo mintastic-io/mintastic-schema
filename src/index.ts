@@ -28,6 +28,7 @@ import {CreatePaymentAccountValidator} from "./message/credit/create-payment-acc
 import {LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
 import {ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 import {Token} from "./api/types";
+import {ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
 
 export {Message} from "./message/message";
 export {Token, IdToken, TokenPayload} from "./api/types";
@@ -57,6 +58,7 @@ export {LockSeries, LockSeriesValidator} from "./message/nft/lock-series";
 export {Mint, MintValidator} from "./message/nft/mint";
 export {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
 export {Transfer, TransferValidator} from "./message/nft/transfer";
+export {ReadCreatedAssets, ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
 
 // credit messages
 export {SetExchangeRate, SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
@@ -121,6 +123,8 @@ export function validate(message: Message, token: Token): Promise<Message> {
         return Promise.resolve(new LinkPaymentAccountValidator().validate(message));
     if (ReadPaymentAccountValidator.isInstance(message))
         return Promise.resolve(new ReadPaymentAccountValidator().validate(message));
+    if (ReadCreatedAssetsValidator.isInstance(message))
+        return Promise.resolve(new ReadCreatedAssetsValidator().validate(message));
 
     return Promise.reject(`unknown message type ${message}`);
 }
