@@ -10,7 +10,7 @@ export interface Transfer extends Message {
 
 export class TransferValidator {
     public static isInstance(object: any): object is Transfer {
-        return object["__type__"] === "market/abort-bid";
+        return object["__type__"] === "nft/transfer";
     }
 
     public validate(message: Transfer): Promise<Transfer> {

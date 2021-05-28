@@ -1,8 +1,8 @@
-import {ReadAssetIdsValidator, ReadCreatedAssets} from "../../src/message/nft/read-created-assets";
+import {ReadCreatedAssets, ReadCreatedAssetsValidator} from "../../src";
 
 describe("read-asset-ids schema tests", function () {
     test("valid", async () => {
         const message: ReadCreatedAssets = {__type__: "nft/read-created-assets"}
-        await new ReadAssetIdsValidator().validate(message);
+        await new ReadCreatedAssetsValidator().validate(message);
     });
 })

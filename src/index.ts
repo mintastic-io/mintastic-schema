@@ -29,12 +29,24 @@ import {LinkPaymentAccountValidator} from "./message/credit/link-payment-account
 import {ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 import {Token} from "./api/types";
 import {ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
+import {ReadAssetValidator} from "./message/nft/read-asset";
+import {RegisterCreatorValidator} from "./message/account/register-creator";
+import {ReadMarketItemValidator} from "./message/market/read-market-item";
+import {IsMarketItemValidator} from "./message/market/is-market-item";
+import {ReadCreatorValidator} from "./message/account/read-creator";
+import {ReadAssetsValidator} from "./message/nft/read-assets";
+import {CreateAccountValidator} from "./message/account/create-account";
 
 export {Message} from "./message/message";
 export {Token, IdToken, TokenPayload} from "./api/types";
 
 // cloud messages
 export {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
+
+// account messages
+export {RegisterCreator, RegisterCreatorValidator} from "./message/account/register-creator";
+export {ReadCreator, ReadCreatorValidator} from "./message/account/read-creator";
+export {CreateAccount, CreateAccountValidator} from "./message/account/create-account";
 
 // market messages
 export {AbortBid, AbortBidValidator} from "./message/market/abort-bid";
@@ -51,6 +63,8 @@ export {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-pri
 export {SetMarketFee, SetMarketFeeValidator} from "./message/market/set-market-fee";
 export {LockOffering, LockOfferingValidator} from "./message/market/lock-offering";
 export {UnlockOffering, UnlockOfferingValidator} from "./message/market/unlock-offering";
+export {ReadMarketItem, ReadMarketItemValidator} from "./message/market/read-market-item";
+export {IsMarketItem, IsMarketItemValidator} from "./message/market/is-market-item";
 
 // nft messages
 export {CreateAsset, CreateAssetValidator} from "./message/nft/create-asset";
@@ -59,6 +73,8 @@ export {Mint, MintValidator} from "./message/nft/mint";
 export {SetMaxSupply, SetMaxSupplyValidator} from "./message/nft/set-max-supply";
 export {Transfer, TransferValidator} from "./message/nft/transfer";
 export {ReadCreatedAssets, ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
+export {ReadAsset, ReadAssetValidator} from "./message/nft/read-asset";
+export {ReadAssets, ReadAssetsValidator} from "./message/nft/read-assets";
 
 // credit messages
 export {SetExchangeRate, SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
@@ -69,64 +85,43 @@ export {LinkPaymentAccount, LinkPaymentAccountValidator} from "./message/credit/
 export {ReadPaymentAccount, ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 
 export function validate(message: Message, token: Token): Promise<Message> {
-    if (AbortBidValidator.isInstance(message))
-        return Promise.resolve(new AbortBidValidator().validate(message));
-    if (SignUrlValidator.isInstance(message))
-        return Promise.resolve(new SignUrlValidator().validate(message, token));
-    if (AcceptBidValidator.isInstance(message))
-        return Promise.resolve(new AcceptBidValidator().validate(message));
-    if (BidWithFiatValidator.isInstance(message))
-        return Promise.resolve(new BidWithFiatValidator().validate(message));
-    if (BidWithFlowValidator.isInstance(message))
-        return Promise.resolve(new BidWithFlowValidator().validate(message));
-    if (BuyWithFiatValidator.isInstance(message))
-        return Promise.resolve(new BuyWithFiatValidator().validate(message));
-    if (BuyWithFlowValidator.isInstance(message))
-        return Promise.resolve(new BuyWithFlowValidator().validate(message));
-    if (CreateLazyOfferValidator.isInstance(message))
-        return Promise.resolve(new CreateLazyOfferValidator().validate(message));
-    if (CreateListOfferValidator.isInstance(message))
-        return Promise.resolve(new CreateListOfferValidator().validate(message));
-    if (RejectBidValidator.isInstance(message))
-        return Promise.resolve(new RejectBidValidator().validate(message));
-    if (SetBlockLimitValidator.isInstance(message))
-        return Promise.resolve(new SetBlockLimitValidator().validate(message));
-    if (SetItemPriceValidator.isInstance(message))
-        return Promise.resolve(new SetItemPriceValidator().validate(message));
-    if (SetMarketFeeValidator.isInstance(message))
-        return Promise.resolve(new SetMarketFeeValidator().validate(message));
-    if (CreateAssetValidator.isInstance(message))
-        return Promise.resolve(new CreateAssetValidator().validate(message, token));
-    if (LockSeriesValidator.isInstance(message))
-        return Promise.resolve(new LockSeriesValidator().validate(message, token));
-    if (MintValidator.isInstance(message))
-        return Promise.resolve(new MintValidator().validate(message));
-    if (SetMaxSupplyValidator.isInstance(message))
-        return Promise.resolve(new SetMaxSupplyValidator().validate(message));
-    if (SetExchangeRateValidator.isInstance(message))
-        return Promise.resolve(new SetExchangeRateValidator().validate(message));
-    if (AssetExistsValidator.isInstance(message))
-        return Promise.resolve(new AssetExistsValidator().validate(message));
-    if (FiatPaymentValidator.isInstance(message))
-        return Promise.resolve(new FiatPaymentValidator().validate(message));
-    if (FiatBidPaymentValidator.isInstance(message))
-        return Promise.resolve(new FiatBidPaymentValidator().validate(message));
-    if (LockOfferingValidator.isInstance(message))
-        return Promise.resolve(new LockOfferingValidator().validate(message));
-    if (UnlockOfferingValidator.isInstance(message))
-        return Promise.resolve(new UnlockOfferingValidator().validate(message));
-    if (TransferValidator.isInstance(message))
-        return Promise.resolve(new TransferValidator().validate(message));
-    if (CreatePaymentAccountValidator.isInstance(message))
-        return Promise.resolve(new CreatePaymentAccountValidator().validate(message));
-    if (LinkPaymentAccountValidator.isInstance(message))
-        return Promise.resolve(new LinkPaymentAccountValidator().validate(message));
-    if (ReadPaymentAccountValidator.isInstance(message))
-        return Promise.resolve(new ReadPaymentAccountValidator().validate(message));
-    if (ReadCreatedAssetsValidator.isInstance(message))
-        return Promise.resolve(new ReadCreatedAssetsValidator().validate(message));
+    if (AbortBidValidator.isInstance(message)) return Promise.resolve(new AbortBidValidator().validate(message));
+    if (SignUrlValidator.isInstance(message)) return Promise.resolve(new SignUrlValidator().validate(message, token));
+    if (AcceptBidValidator.isInstance(message)) return Promise.resolve(new AcceptBidValidator().validate(message));
+    if (BidWithFiatValidator.isInstance(message)) return Promise.resolve(new BidWithFiatValidator().validate(message));
+    if (BidWithFlowValidator.isInstance(message)) return Promise.resolve(new BidWithFlowValidator().validate(message));
+    if (BuyWithFiatValidator.isInstance(message)) return Promise.resolve(new BuyWithFiatValidator().validate(message));
+    if (BuyWithFlowValidator.isInstance(message)) return Promise.resolve(new BuyWithFlowValidator().validate(message));
+    if (CreateLazyOfferValidator.isInstance(message)) return Promise.resolve(new CreateLazyOfferValidator().validate(message));
+    if (CreateListOfferValidator.isInstance(message)) return Promise.resolve(new CreateListOfferValidator().validate(message));
+    if (RejectBidValidator.isInstance(message)) return Promise.resolve(new RejectBidValidator().validate(message));
+    if (SetBlockLimitValidator.isInstance(message)) return Promise.resolve(new SetBlockLimitValidator().validate(message));
+    if (SetItemPriceValidator.isInstance(message)) return Promise.resolve(new SetItemPriceValidator().validate(message));
+    if (SetMarketFeeValidator.isInstance(message)) return Promise.resolve(new SetMarketFeeValidator().validate(message));
+    if (CreateAssetValidator.isInstance(message)) return Promise.resolve(new CreateAssetValidator().validate(message, token));
+    if (LockSeriesValidator.isInstance(message)) return Promise.resolve(new LockSeriesValidator().validate(message, token));
+    if (MintValidator.isInstance(message)) return Promise.resolve(new MintValidator().validate(message));
+    if (SetMaxSupplyValidator.isInstance(message)) return Promise.resolve(new SetMaxSupplyValidator().validate(message));
+    if (SetExchangeRateValidator.isInstance(message)) return Promise.resolve(new SetExchangeRateValidator().validate(message));
+    if (AssetExistsValidator.isInstance(message)) return Promise.resolve(new AssetExistsValidator().validate(message));
+    if (FiatPaymentValidator.isInstance(message)) return Promise.resolve(new FiatPaymentValidator().validate(message));
+    if (FiatBidPaymentValidator.isInstance(message)) return Promise.resolve(new FiatBidPaymentValidator().validate(message));
+    if (LockOfferingValidator.isInstance(message)) return Promise.resolve(new LockOfferingValidator().validate(message));
+    if (UnlockOfferingValidator.isInstance(message)) return Promise.resolve(new UnlockOfferingValidator().validate(message));
+    if (TransferValidator.isInstance(message)) return Promise.resolve(new TransferValidator().validate(message));
+    if (CreatePaymentAccountValidator.isInstance(message)) return Promise.resolve(new CreatePaymentAccountValidator().validate(message));
+    if (LinkPaymentAccountValidator.isInstance(message)) return Promise.resolve(new LinkPaymentAccountValidator().validate(message));
+    if (ReadPaymentAccountValidator.isInstance(message)) return Promise.resolve(new ReadPaymentAccountValidator().validate(message));
+    if (ReadCreatedAssetsValidator.isInstance(message)) return Promise.resolve(new ReadCreatedAssetsValidator().validate(message));
+    if (ReadAssetValidator.isInstance(message)) return Promise.resolve(new ReadAssetValidator().validate(message));
+    if (RegisterCreatorValidator.isInstance(message)) return Promise.resolve(new RegisterCreatorValidator().validate(message));
+    if (ReadMarketItemValidator.isInstance(message)) return Promise.resolve(new ReadMarketItemValidator().validate(message));
+    if (IsMarketItemValidator.isInstance(message)) return Promise.resolve(new IsMarketItemValidator().validate(message));
+    if (ReadCreatorValidator.isInstance(message)) return Promise.resolve(new ReadCreatorValidator().validate(message));
+    if (ReadAssetsValidator.isInstance(message)) return Promise.resolve(new ReadAssetsValidator().validate(message));
+    if (CreateAccountValidator.isInstance(message)) return Promise.resolve(new CreateAccountValidator().validate(message));
 
-    return Promise.reject(`unknown message type ${message}`);
+    return Promise.reject(`unknown message type ${message["__type__"]}`);
 }
 
 export function getAssetId(creatorId: string, assetName: string): string {

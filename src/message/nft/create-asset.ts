@@ -16,6 +16,7 @@ export interface CreateAsset extends Message {
     creatorId: string
     assetName: string
     assetDesc: string
+    address: string
     addresses: { address: string, share: string }[]
     content: string
     royalty: string
@@ -40,6 +41,7 @@ export class CreateAssetValidator {
             .then(e => assertEquals(e, "assetId", getAssetId(message.creatorId, message.assetName)))
             .then(e => assertEquals(e, "creatorId", token.getCreatorId()))
             .then(e => assertNotNull(e, "content"))
+            .then(e => assertNotEmpty(e, "address"))
             .then(e => assertNotEmpty(e, "addresses"))
             .then(e => assertNumeric(e, "royalty"))
             .then(e => assertNotNegative(e, "series"))
