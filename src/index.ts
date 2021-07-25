@@ -28,14 +28,19 @@ import {CreatePaymentAccountValidator} from "./message/credit/create-payment-acc
 import {LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
 import {ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 import {Token} from "./api/types";
-import {ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
+import {ReadAllCreatedAssetsValidator, ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
 import {ReadAssetValidator} from "./message/nft/read-asset";
 import {RegisterCreatorValidator} from "./message/account/register-creator";
 import {ReadMarketItemValidator} from "./message/market/read-market-item";
 import {IsMarketItemValidator} from "./message/market/is-market-item";
-import {ReadCreatorValidator} from "./message/account/read-creator";
+import {ReadUserValidator} from "./message/account/read-user";
 import {ReadAssetsValidator} from "./message/nft/read-assets";
 import {CreateAccountValidator} from "./message/account/create-account";
+import {ReadOwnedAssetsValidator} from "./message/nft/read-owned-assets";
+import {GetAccountValidator} from "./message/account/get-account";
+import {GetOrCreateAccountValidator} from "./message/account/get-or-create-account";
+import {ReadSupplyValidator} from "./message/nft/read-supply";
+import {WriteUserValidator} from "./message/account/write-user";
 
 export {Message} from "./message/message";
 export {Token, IdToken, TokenPayload} from "./api/types";
@@ -45,8 +50,10 @@ export {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
 
 // account messages
 export {RegisterCreator, RegisterCreatorValidator} from "./message/account/register-creator";
-export {ReadCreator, ReadCreatorValidator} from "./message/account/read-creator";
+export {ReadUser, ReadUserValidator} from "./message/account/read-user";
 export {CreateAccount, CreateAccountValidator} from "./message/account/create-account";
+export {GetAccount, GetAccountValidator} from "./message/account/get-account";
+export {GetOrCreateAccount, GetOrCreateAccountValidator} from "./message/account/get-or-create-account";
 
 // market messages
 export {AbortBid, AbortBidValidator} from "./message/market/abort-bid";
@@ -75,6 +82,8 @@ export {Transfer, TransferValidator} from "./message/nft/transfer";
 export {ReadCreatedAssets, ReadCreatedAssetsValidator} from "./message/nft/read-created-assets";
 export {ReadAsset, ReadAssetValidator} from "./message/nft/read-asset";
 export {ReadAssets, ReadAssetsValidator} from "./message/nft/read-assets";
+export {ReadOwnedAssets, ReadOwnedAssetsValidator} from "./message/nft/read-owned-assets";
+export {ReadSupply, ReadSupplyValidator} from "./message/nft/read-supply";
 
 // credit messages
 export {SetExchangeRate, SetExchangeRateValidator} from "./message/credit/set-exchange-rate";
@@ -84,7 +93,16 @@ export {CreatePaymentAccount, CreatePaymentAccountValidator} from "./message/cre
 export {LinkPaymentAccount, LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
 export {ReadPaymentAccount, ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 
-export function validate(message: Message, token: Token): Promise<Message> {
+export function validateUnauthorizedMessage(message: Message): Promise<Message> {
+    if (ReadAssetValidator.isInstance(message)) return Promise.resolve(new ReadAssetValidator().validate(message));
+    if (ReadAllCreatedAssetsValidator.isInstance(message)) return Promise.resolve(new ReadAllCreatedAssetsValidator().validate(message));
+    if (ReadUserValidator.isInstance(message)) return Promise.resolve(new ReadUserValidator().validate(message));
+
+    return Promise.reject(`unknown message type ${message["__type__"]}`);
+}
+
+
+export function validateAuthorizedMessage(message: Message, token: Token): Promise<Message> {
     if (AbortBidValidator.isInstance(message)) return Promise.resolve(new AbortBidValidator().validate(message));
     if (SignUrlValidator.isInstance(message)) return Promise.resolve(new SignUrlValidator().validate(message, token));
     if (AcceptBidValidator.isInstance(message)) return Promise.resolve(new AcceptBidValidator().validate(message));
@@ -117,11 +135,15 @@ export function validate(message: Message, token: Token): Promise<Message> {
     if (RegisterCreatorValidator.isInstance(message)) return Promise.resolve(new RegisterCreatorValidator().validate(message));
     if (ReadMarketItemValidator.isInstance(message)) return Promise.resolve(new ReadMarketItemValidator().validate(message));
     if (IsMarketItemValidator.isInstance(message)) return Promise.resolve(new IsMarketItemValidator().validate(message));
-    if (ReadCreatorValidator.isInstance(message)) return Promise.resolve(new ReadCreatorValidator().validate(message));
     if (ReadAssetsValidator.isInstance(message)) return Promise.resolve(new ReadAssetsValidator().validate(message));
     if (CreateAccountValidator.isInstance(message)) return Promise.resolve(new CreateAccountValidator().validate(message));
+    if (ReadOwnedAssetsValidator.isInstance(message)) return Promise.resolve(new ReadOwnedAssetsValidator().validate(message));
+    if (GetAccountValidator.isInstance(message)) return Promise.resolve(new GetAccountValidator().validate(message));
+    if (GetOrCreateAccountValidator.isInstance(message)) return Promise.resolve(new GetOrCreateAccountValidator().validate(message));
+    if (ReadSupplyValidator.isInstance(message)) return Promise.resolve(new ReadSupplyValidator().validate(message));
+    if (WriteUserValidator.isInstance(message)) return Promise.resolve(new WriteUserValidator().validate(message));
 
-    return Promise.reject(`unknown message type ${message["__type__"]}`);
+    return validateUnauthorizedMessage(message);
 }
 
 export function getAssetId(creatorId: string, assetName: string): string {

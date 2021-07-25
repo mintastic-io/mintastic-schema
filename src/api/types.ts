@@ -21,7 +21,8 @@ export class IdToken implements Token {
             sub: parsed.sub!,
             exp: parsed.exp!,
             email: parsed["email"],
-            email_verified: parsed["email_verified"]
+            email_verified: parsed["email_verified"],
+            username: parsed["cognito:username"]
         }
     }
 
@@ -49,4 +50,5 @@ export interface TokenPayload {
     exp: number
     email: string
     email_verified: boolean
+    username: string
 }

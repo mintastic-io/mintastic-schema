@@ -1,12 +1,12 @@
-import {ReadCreator, ReadCreatorValidator} from "../../src";
+import {ReadUser, ReadUserValidator} from "../../src";
 
 describe("read-creator schema tests", function () {
     test("valid", async () => {
-        const message: ReadCreator = {__type__: "account/read-creator", creatorId: "asdf"}
-        await new ReadCreatorValidator().validate(message);
+        const message: ReadUser = {__type__: "ReadUser", userId: "asdf"}
+        await new ReadUserValidator().validate(message);
     });
     test("invalid creatorId", async () => {
-        const message: ReadCreator = {__type__: "account/read-creator", creatorId: ""}
-        await expect(new ReadCreatorValidator().validate(message)).rejects.toContain("creatorId");
+        const message: ReadUser = {__type__: "ReadUser", userId: ""}
+        await expect(new ReadUserValidator().validate(message)).rejects.toContain("creatorId");
     });
 })
