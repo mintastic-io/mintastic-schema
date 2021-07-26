@@ -1,4 +1,4 @@
-import {Token, TokenPayload} from "../src";
+import {Token} from "../src";
 
 class TokenImpl implements Token {
     private readonly token: string
@@ -15,13 +15,10 @@ class TokenImpl implements Token {
         return "83860f23-4b38-407d-a499-ef99bf8b6d42";
     }
 
-    isExpired(): boolean {
-        return false;
-    }
-
-    getPayload(): Promise<TokenPayload> {
-        return Promise.reject("no token payload available");
-    }
+    getGroups = () => [];
+    getUsername = () => "";
+    isExpired = () => false
+    getPayload = () => ({})
 
 }
 

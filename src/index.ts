@@ -41,9 +41,10 @@ import {GetAccountValidator} from "./message/account/get-account";
 import {GetOrCreateAccountValidator} from "./message/account/get-or-create-account";
 import {ReadSupplyValidator} from "./message/nft/read-supply";
 import {WriteUserValidator} from "./message/account/write-user";
+import {SignUpValidator} from "./message/auth";
 
 export {Message} from "./message/message";
-export {Token, IdToken, TokenPayload} from "./api/types";
+export {Token, IdToken} from "./api/types";
 
 // cloud messages
 export {SignUrl, SignUrlValidator} from "./message/cloud/sign-url";
@@ -97,6 +98,7 @@ export function validateUnauthorizedMessage(message: Message): Promise<Message> 
     if (ReadAssetValidator.isInstance(message)) return Promise.resolve(new ReadAssetValidator().validate(message));
     if (ReadAllCreatedAssetsValidator.isInstance(message)) return Promise.resolve(new ReadAllCreatedAssetsValidator().validate(message));
     if (ReadUserValidator.isInstance(message)) return Promise.resolve(new ReadUserValidator().validate(message));
+    if (SignUpValidator.isInstance(message)) return Promise.resolve(new SignUpValidator().validate(message));
 
     return Promise.reject(`unknown message type ${message["__type__"]}`);
 }

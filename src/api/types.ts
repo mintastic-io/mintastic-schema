@@ -6,49 +6,29 @@ export interface Token {
     getCreatorId(): string
     isExpired(): boolean
     getAuthorization(onRefresh: (Token) => void): Promise<string>
-    getPayload(): Promise<TokenPayload>
+    getPayload(): {}
+    getUsername(): string
+    getGroups(): string[]
 }
 
 export class IdToken implements Token {
     private readonly token: string
-    private readonly payload: TokenPayload
+    private readonly payload: {}
 
     constructor(token: string) {
         this.token = token;
-
-        const parsed = jwtDecode<JwtPayload>(token);
-        this.payload = {
-            sub: parsed.sub!,
-            exp: parsed.exp!,
-            email: parsed["email"],
-            email_verified: parsed["email_verified"],
-            username: parsed["cognito:username"]
-        }
+        this.payload = jwtDecode<JwtPayload>(token);
     }
 
-    getCreatorId(): string {
-        return this.payload.sub
-    }
+    getCreatorId = () => this.payload["sub"];
+    getAuthorization = () => Promise.resolve(`Bearer ${this.token}`);
+    getPayload = () => this.payload;
+    getGroups = () => this.payload["cognito:groups"];
+    getUsername = () => this.payload["cognito:username"];
 
     isExpired(): boolean {
         const time = Math.trunc(new Date().getTime() / 1000) + (5 * 60)
-        return time > this.payload.exp;
+        return time > this.payload["exp"];
     }
 
-    getAuthorization(): Promise<string> {
-        return Promise.resolve(`Bearer ${this.token}`);
-    }
-
-    getPayload(): Promise<TokenPayload> {
-        return Promise.resolve(this.payload);
-    }
-
-}
-
-export interface TokenPayload {
-    sub: string
-    exp: number
-    email: string
-    email_verified: boolean
-    username: string
 }
