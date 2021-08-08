@@ -42,6 +42,8 @@ import {GetOrCreateAccountValidator} from "./message/account/get-or-create-accou
 import {ReadSupplyValidator} from "./message/nft/read-supply";
 import {WriteUserValidator} from "./message/account/write-user";
 import {SignUpValidator} from "./message/auth";
+import {UpdateAssetValidator} from "./message/nft/update-asset";
+import {DeleteAssetValidator} from "./message/nft/delete-asset";
 
 export {Message} from "./message/message";
 export {Token, IdToken} from "./api/types";
@@ -119,6 +121,8 @@ export function validateAuthorizedMessage(message: Message, token: Token): Promi
     if (SetItemPriceValidator.isInstance(message)) return Promise.resolve(new SetItemPriceValidator().validate(message));
     if (SetMarketFeeValidator.isInstance(message)) return Promise.resolve(new SetMarketFeeValidator().validate(message));
     if (CreateAssetValidator.isInstance(message)) return Promise.resolve(new CreateAssetValidator().validate(message, token));
+    if (UpdateAssetValidator.isInstance(message)) return Promise.resolve(new UpdateAssetValidator().validate(message, token));
+    if (DeleteAssetValidator.isInstance(message)) return Promise.resolve(new DeleteAssetValidator().validate(message, token));
     if (LockSeriesValidator.isInstance(message)) return Promise.resolve(new LockSeriesValidator().validate(message, token));
     if (MintValidator.isInstance(message)) return Promise.resolve(new MintValidator().validate(message));
     if (SetMaxSupplyValidator.isInstance(message)) return Promise.resolve(new SetMaxSupplyValidator().validate(message));
