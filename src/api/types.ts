@@ -5,7 +5,8 @@ export type Currency = "eur" | "usd" | "flow";
 export interface Token {
     getCreatorId(): string
     isExpired(): boolean
-    getAuthorization(onRefresh: (Token) => void): Promise<string>
+    // TODO: remove refresh flag
+    getAuthorization(onRefresh: (Token) => void, refresh: boolean): Promise<string>
     getPayload(): {}
     getUsername(): string
     getGroups(): string[]

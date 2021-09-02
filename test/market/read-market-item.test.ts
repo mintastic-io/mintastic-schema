@@ -3,11 +3,11 @@ import {ReadMarketItem, ReadMarketItemValidator} from "../../src/message/market/
 
 describe("read-market-item schema tests", function () {
     test("valid", async () => {
-        const message: ReadMarketItem = {__type__: "market/read-market-item", id: uuid()}
+        const message: ReadMarketItem = {__type__: "market/read-market-item", assetId: uuid(), ownerId: uuid()}
         await new ReadMarketItemValidator().validate(message)
     });
     test("invalid id", async () => {
-        const message: ReadMarketItem = {__type__: "market/read-market-item", id: ""}
+        const message: ReadMarketItem = {__type__: "market/read-market-item", assetId: "", ownerId: uuid()}
         await expect(new ReadMarketItemValidator().validate(message)).rejects.toContain("id");
     });
 })

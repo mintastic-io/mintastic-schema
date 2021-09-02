@@ -6,8 +6,6 @@ import {BidWithFiat, BidWithFiatValidator} from "./message/market/bid-with-fiat"
 import {BidWithFlow, BidWithFlowValidator} from "./message/market/bid-with-flow";
 import {BuyWithFiat, BuyWithFiatValidator} from "./message/market/buy-with-fiat";
 import {BuyWithFlow, BuyWithFlowValidator} from "./message/market/buy-with-flow";
-import {CreateLazyOffer, CreateLazyOfferValidator} from "./message/market/create-lazy-offer";
-import {CreateListOffer, CreateListOfferValidator} from "./message/market/create-list-offer";
 import {RejectBid, RejectBidValidator} from "./message/market/reject-bid";
 import {SetBlockLimit, SetBlockLimitValidator} from "./message/market/set-block-limit";
 import {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-price";
@@ -41,9 +39,13 @@ import {GetAccountValidator} from "./message/account/get-account";
 import {GetOrCreateAccountValidator} from "./message/account/get-or-create-account";
 import {ReadSupplyValidator} from "./message/nft/read-supply";
 import {WriteUserValidator} from "./message/account/write-user";
-import {SignUpValidator} from "./message/auth";
+import {EnableMFAValidator, RefreshTokenValidator, SignUpValidator, VerifyMFAValidator} from "./message/auth";
 import {UpdateAssetValidator} from "./message/nft/update-asset";
 import {DeleteAssetValidator} from "./message/nft/delete-asset";
+import {CompletePaymentValidator, InitiatePaymentValidator} from "./message/payment";
+import {CreateMarketItemValidator} from "./message/market/item/create-market-item";
+import {DeleteMarketItemValidator} from "./message/market/item/delete-market-item";
+import {ContactValidator} from "./message/contact";
 
 export {Message} from "./message/message";
 export {Token, IdToken} from "./api/types";
@@ -65,8 +67,6 @@ export {BidWithFiat, BidWithFiatValidator} from "./message/market/bid-with-fiat"
 export {BidWithFlow, BidWithFlowValidator} from "./message/market/bid-with-flow";
 export {BuyWithFiat, BuyWithFiatValidator} from "./message/market/buy-with-fiat";
 export {BuyWithFlow, BuyWithFlowValidator} from "./message/market/buy-with-flow";
-export {CreateLazyOffer, CreateLazyOfferValidator} from "./message/market/create-lazy-offer";
-export {CreateListOffer, CreateListOfferValidator} from "./message/market/create-list-offer";
 export {RejectBid, RejectBidValidator} from "./message/market/reject-bid";
 export {SetBlockLimit, SetBlockLimitValidator} from "./message/market/set-block-limit";
 export {SetItemPrice, SetItemPriceValidator} from "./message/market/set-item-price";
@@ -75,6 +75,8 @@ export {LockOffering, LockOfferingValidator} from "./message/market/lock-offerin
 export {UnlockOffering, UnlockOfferingValidator} from "./message/market/unlock-offering";
 export {ReadMarketItem, ReadMarketItemValidator} from "./message/market/read-market-item";
 export {IsMarketItem, IsMarketItemValidator} from "./message/market/is-market-item";
+export {CreateMarketItemValidator, CreateMarketItem} from "./message/market/item/create-market-item";
+export {DeleteMarketItemValidator, DeleteMarketItem} from "./message/market/item/delete-market-item";
 
 // nft messages
 export {CreateAsset, CreateAssetValidator} from "./message/nft/create-asset";
@@ -96,11 +98,16 @@ export {CreatePaymentAccount, CreatePaymentAccountValidator} from "./message/cre
 export {LinkPaymentAccount, LinkPaymentAccountValidator} from "./message/credit/link-payment-account";
 export {ReadPaymentAccount, ReadPaymentAccountValidator} from "./message/credit/read-payment-account";
 
+export {InitiatePaymentValidator, InitiatePayment, CompletePaymentValidator, CompletePayment} from "./message/payment";
+export {ContactValidator, Contact} from "./message/contact";
+
 export function validateUnauthorizedMessage(message: Message): Promise<Message> {
     if (ReadAssetValidator.isInstance(message)) return Promise.resolve(new ReadAssetValidator().validate(message));
     if (ReadAllCreatedAssetsValidator.isInstance(message)) return Promise.resolve(new ReadAllCreatedAssetsValidator().validate(message));
     if (ReadUserValidator.isInstance(message)) return Promise.resolve(new ReadUserValidator().validate(message));
     if (SignUpValidator.isInstance(message)) return Promise.resolve(new SignUpValidator().validate(message));
+    if (RefreshTokenValidator.isInstance(message)) return Promise.resolve(new RefreshTokenValidator().validate(message));
+    if (ContactValidator.isInstance(message)) return Promise.resolve(new ContactValidator().validate(message));
 
     return Promise.reject(`unknown message type ${message["__type__"]}`);
 }
@@ -114,8 +121,8 @@ export function validateAuthorizedMessage(message: Message, token: Token): Promi
     if (BidWithFlowValidator.isInstance(message)) return Promise.resolve(new BidWithFlowValidator().validate(message));
     if (BuyWithFiatValidator.isInstance(message)) return Promise.resolve(new BuyWithFiatValidator().validate(message));
     if (BuyWithFlowValidator.isInstance(message)) return Promise.resolve(new BuyWithFlowValidator().validate(message));
-    if (CreateLazyOfferValidator.isInstance(message)) return Promise.resolve(new CreateLazyOfferValidator().validate(message));
-    if (CreateListOfferValidator.isInstance(message)) return Promise.resolve(new CreateListOfferValidator().validate(message));
+    if (CreateMarketItemValidator.isInstance(message)) return Promise.resolve(new CreateMarketItemValidator().validate(message));
+    if (DeleteMarketItemValidator.isInstance(message)) return Promise.resolve(new DeleteMarketItemValidator().validate(message));
     if (RejectBidValidator.isInstance(message)) return Promise.resolve(new RejectBidValidator().validate(message));
     if (SetBlockLimitValidator.isInstance(message)) return Promise.resolve(new SetBlockLimitValidator().validate(message));
     if (SetItemPriceValidator.isInstance(message)) return Promise.resolve(new SetItemPriceValidator().validate(message));
@@ -148,6 +155,12 @@ export function validateAuthorizedMessage(message: Message, token: Token): Promi
     if (GetOrCreateAccountValidator.isInstance(message)) return Promise.resolve(new GetOrCreateAccountValidator().validate(message));
     if (ReadSupplyValidator.isInstance(message)) return Promise.resolve(new ReadSupplyValidator().validate(message));
     if (WriteUserValidator.isInstance(message)) return Promise.resolve(new WriteUserValidator().validate(message));
+    if (RefreshTokenValidator.isInstance(message)) return Promise.resolve(new RefreshTokenValidator().validate(message));
+    if (InitiatePaymentValidator.isInstance(message)) return Promise.resolve(new InitiatePaymentValidator().validate(message));
+    if (CompletePaymentValidator.isInstance(message)) return Promise.resolve(new CompletePaymentValidator().validate(message));
+
+    if (EnableMFAValidator.isInstance(message)) return Promise.resolve(new EnableMFAValidator().validate(message));
+    if (VerifyMFAValidator.isInstance(message)) return Promise.resolve(new VerifyMFAValidator().validate(message));
 
     return validateUnauthorizedMessage(message);
 }
